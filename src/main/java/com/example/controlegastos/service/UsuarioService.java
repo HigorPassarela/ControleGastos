@@ -1,6 +1,7 @@
 package com.example.controlegastos.service;
 
 import com.example.controlegastos.model.usuarios.Usuario;
+import com.example.controlegastos.model.usuarios.request.LoginRequest;
 import com.example.controlegastos.model.usuarios.request.UsuarioRequest;
 import com.example.controlegastos.model.usuarios.response.UsuarioResponse;
 import com.example.controlegastos.repository.UsuarioRepository;
@@ -35,5 +36,17 @@ public class UsuarioService {
     //Validar senha para login
     public boolean validarLogin(String senhaInformada, String SenhaHash){
         return  passwordEncoder.matches(senhaInformada,SenhaHash);
+    }
+
+    //Login
+    public UsuarioResponse login(LoginRequest dados){
+
+        Usuario usuario = usuarioRepository.findByEmail(dados.email())
+                .orElseThrow(() -> new RuntimeException("Email ou senha invalidos!"));
+
+        if (!passwordEncoder.matches(dados.senha(), usuario.getSenha())){
+            throw new RuntimeException("Email ou senha invalidos!");
+        }
+        return new UsuarioResponse(usuario);
     }
 }
