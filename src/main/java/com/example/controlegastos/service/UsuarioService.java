@@ -5,15 +5,18 @@ import com.example.controlegastos.model.usuarios.request.UsuarioRequest;
 import com.example.controlegastos.model.usuarios.response.UsuarioResponse;
 import com.example.controlegastos.repository.UsuarioRepository;
 import jakarta.validation.Valid;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UsuarioService(UsuarioRepository usuarioRepository) {
+    public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder) {
         this.usuarioRepository = usuarioRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     //Cadastrar Usuario
@@ -22,10 +25,15 @@ public class UsuarioService {
         Usuario usuario = Usuario.builder()
                 .nome(dados.nome())
                 .email(dados.email())
-                .senha(dados.senha())
+                .senha(passwordEncoder.encode(dados.senha()))
                 .build();
 
         usuarioRepository.save(usuario);
         return new UsuarioResponse(usuario);
+    }
+
+    //Validar senha para login
+    public boolean validarLogin(String senhaInformada, String SenhaHash){
+        return  passwordEncoder.matches(senhaInformada,SenhaHash);
     }
 }
