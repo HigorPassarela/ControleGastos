@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
+@Table(name = "usuarios")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -29,12 +30,12 @@ public class Usuario {
     @NotBlank(message = "Email é obrigatório")
     private String email;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 255)
     @NotBlank(message = "Senha é obrigatória")
     private String senha;
 
     @CreationTimestamp
-    @Column(nullable = false)
+    @Column(name = "data_cadastro", nullable = false, updatable = false)
     private LocalDateTime dataCadastro;
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
