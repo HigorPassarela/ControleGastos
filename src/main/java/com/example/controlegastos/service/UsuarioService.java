@@ -5,6 +5,7 @@ import com.example.controlegastos.model.usuarios.request.LoginRequest;
 import com.example.controlegastos.model.usuarios.request.UsuarioRequest;
 import com.example.controlegastos.model.usuarios.response.UsuarioResponse;
 import com.example.controlegastos.repository.UsuarioRepository;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ public class UsuarioService {
     }
 
     //Cadastrar Usuario
+    @Transactional
     public UsuarioResponse CadastrarUsuario(@Valid UsuarioRequest dados){
 
         Usuario usuario = Usuario.builder()
@@ -34,11 +36,13 @@ public class UsuarioService {
     }
 
     //Validar senha para login
+    @Transactional
     public boolean validarLogin(String senhaInformada, String SenhaHash){
         return  passwordEncoder.matches(senhaInformada,SenhaHash);
     }
 
     //Login
+    @Transactional
     public UsuarioResponse login(LoginRequest dados){
 
         Usuario usuario = usuarioRepository.findByEmail(dados.email())
